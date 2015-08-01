@@ -132,3 +132,20 @@ Results in:
 }
 ```
 
+## How to create a file-based database
+
+Create database and fill it with test data:
+
+```
+java -cp ~/.m2/repository/com/h2database/h2/1.4.183/h2-1.4.183.jar org.h2.tools.RunScript -url jdbc:h2:/tmp/userdb -user sa -script user-service-server/src/main/resources/userService/sql/user-schema.sql
+java -cp ~/.m2/repository/com/h2database/h2/1.4.183/h2-1.4.183.jar org.h2.tools.RunScript -url jdbc:h2:/tmp/userdb -user sa -script user-service-server/src/main/resources/userService/sql/user-fixture.sql
+```
+
+
+Then you can connect to it using h2 shell (remove rlwrap if you don't want to use readline):
+
+```
+rlwrap java -cp ~/.m2/repository/com/h2database/h2/1.4.183/h2-1.4.183.jar org.h2.tools.Shell -url jdbc:h2:/tmp/userdb -user sa
+```
+
+
