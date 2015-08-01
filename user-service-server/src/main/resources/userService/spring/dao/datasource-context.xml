@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="userService.dao.dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+    <property name="driverClass"      value="org.h2.Driver" />
+    <property name="jdbcUrl"          value="${userService.dao.dataSource.url}" />
+    <property name="user"             value="${userService.dao.dataSource.username}" />
+    <property name="password"         value="${userService.dao.dataSource.password}" />
+
+    <property name="minPoolSize"      value="2" /> <!-- ~3-5 for HL app, usually 4 -->
+    <property name="initialPoolSize"  value="2" /> <!-- matches minPoolSize -->
+    <property name="acquireIncrement" value="2" /> <!-- matches minPoolSize -->
+    <property name="maxPoolSize"      value="8" /> <!-- ~30-50 for HL app, usually 40 -->
+    <property name="maxIdleTime"      value="800" /> <!-- ~600-3600 seconds, usually 10-30 minutes (i.e. 600-900) -->
+    <property name="maxIdleTimeExcessConnections" value="1000" /> <!-- how often to clean up excessive connections (once/sec) -->
+    <property name="maxConnectionAge" value="800" /> <!-- usually half an hour should be enough -->
+    <property name="idleConnectionTestPeriod" value="60" /> <!-- test for stale connection every minute -->
+    <property name="checkoutTimeout" value="3000" /> <!-- max time to create connection -->
+    <property name="acquireRetryAttempts" value="0" /> <!-- max number of attempts to get a connection, zero means infinite -->
+    <property name="acquireRetryDelay" value="1500" /> <!-- every 1.5 seconds -->
+    <property name="preferredTestQuery" value="SELECT 1"/> <!-- needed to drop stale connections -->
+    <property name="maxStatementsPerConnection" value="20" /> <!-- should be estimated based on application usage, usually 4-8 higher than N of frequent queries -->
+    <!-- <property name="numHelperThreads" value="8" /> --> <!-- how much helper threads serves this pool, should be determined experimentally. -->
+  </bean>
+
+  <!-- UserAccount DB initializer -->
+
+  <bean id="userService.dao.initScripts" class="java.lang.String">
+    <constructor-arg value="${userService.dao.initScripts}" />
+  </bean>
+
+  <bean class="org.springframework.jdbc.datasource.init.DataSourceInitializer">
+    <property name="dataSource" ref="userService.dao.dataSource" />
+    <property name="databasePopulator">
+      <bean class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
+        <property name="scripts">
+          <bean factory-bean="userService.dao.initScripts" factory-method="split">
+            <constructor-arg value=","/>
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+</beans>

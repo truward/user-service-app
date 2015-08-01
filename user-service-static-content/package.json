@@ -1,0 +1,23 @@
+{
+  "name": "user-service-admin-console",
+  "version": "1.0.0",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "jest-cli": "^0.4.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-browserify": "^3.6.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-uglify": "^0.8.0",
+    "bootstrap": "^3.0.0",
+    "director": "^1.2.8",
+    "rsvp": "^3.0.0",
+    "react": "^0.13.0",
+    "grunt-react": "^0.12.0"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

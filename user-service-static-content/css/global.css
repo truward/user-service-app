@@ -1,0 +1,41 @@
+
+body {
+    padding-top: 70px;
+    /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+/* Navbar icon */
+.navbar-brand .glyphicon {
+  color: #ff9900;
+}
+
+/* Inactive Contacts */
+
+.inactive-contact-row {
+  color: #980000;
+  background-color: #d0d0d0;
+}
+
+
+/* Account List Table */
+
+.account-list-table {
+  /*table-layout: fixed;*/
+}
+
+.authorities-cell {
+  /*width: 15em;*/
+  /*max-width: 15em;*/
+}
+
+.password-cell {
+  width: 20em;
+  max-width: 20em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.buttons-cell {
+  width: 15em;
+  max-width: 15em;
+}

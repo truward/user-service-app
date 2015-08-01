@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+  <context:annotation-config/>
+
+  <!-- All Data Sources-in-one -->
+
+  <!-- pick random DB name to avoid collisions in tests -->
+  <bean id="test.dao.dbName" class="java.lang.Long" factory-method="toHexString">
+    <constructor-arg>
+      <bean class="java.lang.System" factory-method="currentTimeMillis"/>
+    </constructor-arg>
+  </bean>
+
+  <bean id="test.dao.databaseFactory" class="org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory">
+    <property name="databaseType" value="H2" />
+    <property name="databaseName" ref="test.dao.dbName" />
+    <property name="databasePopulator">
+      <bean class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
+        <property name="scripts">
+          <array>
+            <value>classpath:/userService/sql/user-schema.sql</value>
+            <value>classpath:/userService/sql/user-fixture.sql</value>
+          </array>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="userService.dao.dataSource" factory-bean="test.dao.databaseFactory" factory-method="getDatabase" destroy-method="shutdown" />
+
+  <import resource="classpath:/userService/spring/dao/dao-context.xml" />
+  <import resource="classpath:/userService/spring/service-beans.xml"/>
+</beans>
