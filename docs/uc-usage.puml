@@ -1,0 +1,30 @@
+@startuml
+
+title General Usage Use Case Diagram
+left to right direction
+
+actor "Foo Service" as FooSrv
+actor "System Administrator" as Admin
+actor "External Customer" as Customer
+actor "Mail Server" as Mail
+actor "User Service" as UserSrv
+
+rectangle "User Service Use Cases" {
+  FooSrv -> (Get User Profile By Login/Password)
+  FooSrv -> (Get User Profile By Email/Login)
+  FooSrv -> (Register User Profile)
+
+  usecase (Generate\nRegistration\nToken) as GenToken
+  Admin -> GenToken
+  FooSrv -> GenToken
+
+  Customer -> (Open Activation Link)
+}
+
+rectangle "Mail Server Use Cases" {
+  usecase (Send Mail) as SendMail
+  UserSrv -> SendMail
+  Customer -> (Receive Mail)
+}
+
+@enduml

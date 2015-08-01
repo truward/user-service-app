@@ -1,0 +1,52 @@
+@startuml
+
+actor "External Customer" as Customer
+actor "System Administrator" as Admin
+participant "Foo Service" as FooSrv
+participant "User Service" as UserSrv
+participant "Mail Server" as Mail
+
+autonumber 100
+== Authentication ==
+Customer -> FooSrv: Authentication Request
+FooSrv --> UserSrv: getUser(scope, login, passwordHash)
+alt User Exists
+UserSrv --> FooSrv : UserProfile
+FooSrv -> FooSrv : Generate Session
+FooSrv -> Customer : Session
+end
+alt User Does Not Exist
+UserSrv --> FooSrv : null
+FooSrv -> Customer : Error(Forbidden)
+end
+
+autonumber 200
+== Registration ==
+Customer -> FooSrv: Register(login, email)
+FooSrv --> UserSrv: getUserByLoginOrEmail(email)
+alt User Exists
+UserSrv --> FooSrv: UserProfile
+FooSrv -> Customer: Login
+end
+alt User Does Not Exist
+UserSrv --> FooSrv: null
+FooSrv -> Customer: Registration Page
+Customer -> FooSrv: Register(login, password, email, Optional(registrationToken));
+FooSrv --> UserSrv: registerUser(scope, login, password, email)
+UserSrv -> FooSrv: (userId, activationRequired)
+alt Activation Required
+UserSrv --> Mail: Send Activation Email
+FooSrv -> Customer: Activate Account
+Mail -> Customer: Activation Email
+Customer -> UserSrv: Click On Activation Link
+UserSrv -> UserSrv: Mark UserProfile Activated
+UserSrv -> Customer: Redirect To FooSrv
+end
+end
+
+autonumber 300
+== Invitation Token ==
+Admin -> UserSrv: generateRegistrationToken(scope, N)
+UserSrv -> Admin: List(token)
+
+@enduml
