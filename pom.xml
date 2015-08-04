@@ -56,7 +56,7 @@
 
     <user-service-client.version>1.0.1</user-service-client.version>
 
-    <brikar.version>1.0.14</brikar.version> <!-- TODO: consider using version range, e.g. - (,2.0) -->
+    <brikar.version>1.0.14</brikar.version>
 
     <aspectj.version>1.6.10</aspectj.version>
     <spring.version>3.2.3.RELEASE</spring.version> <!-- TODO 4.1.6 -->
