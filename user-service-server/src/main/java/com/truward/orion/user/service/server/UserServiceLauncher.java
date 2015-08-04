@@ -33,7 +33,7 @@ public final class UserServiceLauncher extends StandardLauncher {
         .setDefaultDirPrefix("classpath:/userService/")
         .setSimpleSecurityEnabled(!argList.contains("--dev-disable-simple-security"))
         .setAuthPropertiesPrefix("userService.auth")
-        .start(args);
+        .start();
   }
 
   @Nonnull

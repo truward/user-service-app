@@ -1,16 +1,22 @@
 
 ## Dev Start
 
+System properties for development only:
+
+```
+-Dbrikar.settings.gracefulShutdownMillis=100
+```
+
 Command Line Arguments for development only:
 
 ```
---graceful-shutdown-millis 100 --dev-disable-simple-security --dev-override-static-path $PATH_TO/orion/user-service/user-service-server/web/target/
+--dev-disable-simple-security --dev-override-static-path $PATH_TO/orion/user-service/user-service-server/web/target/
 ```
 
 Explanation:
 
-* ``--graceful-shutdown-millis 100`` - shutdown faster, bigger value means that jetty will wait longer to close existing
-connection before shutdown.
+* ``-Dbrikar.settings.gracefulShutdownMillis=100`` - shutdown faster, bigger value means that jetty will wait longer
+to close existing connection before shutdown.
 * ``--dev-disable-simple-security`` - turns off basic authentication.
 * ``--dev-override-static-path $PATH_TO_WEB_DIR`` - custom path to the web dir (using file system paths), so that jetty
 will be able to pickup changed files on the fly thus speeding up the development.
