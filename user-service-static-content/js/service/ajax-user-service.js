@@ -1,6 +1,6 @@
-var ajax = require('../util/rsvp-ajax.js');
 var cache = require('../util/rsvp-cache.js');
 var rsvp = require('rsvp');
+var ajax = require('rsvp-ajax');
 
 var DEFAULT_LIMIT = 10;
 

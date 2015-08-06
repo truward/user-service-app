@@ -1,4 +1,4 @@
-var ajax = require('../util/rsvp-ajax.js');
+var ajax = require('rsvp-ajax');
 
 //
 // Service

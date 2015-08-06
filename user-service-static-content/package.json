@@ -14,6 +14,7 @@
     "bootstrap": "^3.0.0",
     "director": "^1.2.8",
     "rsvp": "^3.0.0",
+    "rsvp-ajax": "^1.0.0",
     "react": "^0.13.0",
     "grunt-react": "^0.12.0"
   },

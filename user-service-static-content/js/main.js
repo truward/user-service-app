@@ -3,9 +3,8 @@ var React = require('React');
 var Dispatcher = require('./view/dispatcher.js');
 var UserService = require('./service/ajax-user-service.js').UserService;
 var PasswordService = require('./service/ajax-password-service.js').PasswordService;
-var installGlobalAjaxErrorHandler = require('./util/rsvp-ajax.js').installGlobalErrorHandler;
+var ajax = require('rsvp-ajax');
 var installGlobalCacheEventHandler = require('./util/rsvp-cache.js').installGlobalCacheEventHandler;
-var ajax = require('./util/rsvp-ajax.js');
 var parseQueryString = require('./util/uri.js').parseQueryString;
 
 
@@ -13,7 +12,7 @@ function installDebugHooks() {
   console.log("Installing Debug Hooks...");
 
   // install AJAX interceptor
-  installGlobalAjaxErrorHandler("userServiceAjaxHandler", function (xmlHttpRequest) {
+  ajax.installGlobalAjaxErrorHandler("userServiceAjaxHandler", function (xmlHttpRequest) {
     window["lastErrorXhr"] = xmlHttpRequest;
     console.error("AJAX error, status:", xmlHttpRequest.status, xmlHttpRequest.statusText,
       "responseURL:", xmlHttpRequest.responseURL, "requestId:", xmlHttpRequest.getResponseHeader("X-Rid"));
