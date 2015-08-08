@@ -1,6 +1,6 @@
-var cache = require('../util/rsvp-cache.js');
 var rsvp = require('rsvp');
 var ajax = require('rsvp-ajax');
+var cache = require('rsvp-cache');
 
 var DEFAULT_LIMIT = 10;
 
@@ -10,7 +10,7 @@ var DEFAULT_LIMIT = 10;
 
 function AjaxUserService() {
   this.cache = {
-    accounts: new cache.SimpleObjectRsvpCache()
+    accounts: new cache.SimpleObjectCache()
   };
 }
 

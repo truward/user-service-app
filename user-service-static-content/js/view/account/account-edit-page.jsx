@@ -14,8 +14,6 @@ module.exports = React.createClass({
   },
 
   fetchUserAccount: function (props) {
-    console.log("[fetchUserAccount] props", props, "this", this);
-
     this.setState({mode: LOADING, account: null, message: props.message || null});
 
     var userId = props.userId;
@@ -37,7 +35,6 @@ module.exports = React.createClass({
       }.bind(this));
     } else {
       // existing account
-      console.log("existing account");
       var promise = props.services.userService.getAccountById(userId);
       promise.then(function (account) {
         this.setState({mode: UPDATE, account: account});

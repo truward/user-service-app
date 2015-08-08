@@ -10,7 +10,7 @@ System properties for development only:
 Command Line Arguments for development only:
 
 ```
---dev-disable-simple-security --dev-override-static-path $PATH_TO/orion/user-service/user-service-server/web/target/
+--dev-disable-simple-security --dev-override-static-path $PATH_TO/orion/user-service/user-service-static-content/target/release
 ```
 
 Explanation:
