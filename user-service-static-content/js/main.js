@@ -12,11 +12,11 @@ function installDebugHooks() {
   console.log("Installing Debug Hooks...");
 
   // install AJAX interceptor
-//  ajax.installGlobalAjaxErrorHandler("userServiceAjaxHandler", function (xmlHttpRequest) {
-//    window["lastErrorXhr"] = xmlHttpRequest;
-//    console.error("AJAX error, status:", xmlHttpRequest.status, xmlHttpRequest.statusText,
-//      "responseURL:", xmlHttpRequest.responseURL, "requestId:", xmlHttpRequest.getResponseHeader("X-Rid"));
-//  });
+  ajax.on(ajax.XHR_ERROR, function (xmlHttpRequest) {
+    window["lastErrorXhr"] = xmlHttpRequest;
+    console.error("AJAX error; status:", xmlHttpRequest.status, xmlHttpRequest.statusText,
+      "responseURL:", xmlHttpRequest.responseURL, "requestId:", xmlHttpRequest.getResponseHeader("X-Rid"));
+  });
 
   // install cache event handlers
   cache.on(cache.CACHE_HIT, function (d) {
