@@ -6,11 +6,9 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,19 +19,23 @@ import java.util.List;
 public final class UserServiceLauncher extends StandardLauncher {
   private final ResourceHandler resourceHandler;
 
-  public UserServiceLauncher(@Nullable String overrideStaticPath) throws IOException {
-    this.resourceHandler = createStaticHandler(overrideStaticPath);
+  public UserServiceLauncher() throws Exception {
+    super("classpath:/userService/");
+    this.resourceHandler = createStaticHandler();
+
+    setAuthPropertiesPrefix("userService.auth");
+    setSimpleSecurityEnabled(!getPropertyResolver().getProperty("brikar.dev.disableSecurity", Boolean.class, true));
   }
 
   public static void main(String[] args) throws Exception {
-    final List<String> argList = Arrays.asList(args);
-    final int overrideStaticPathIndex = argList.indexOf("--dev-override-static-path") + 1;
+    // TODO: remove (config logging in brikar)
+    if (System.getProperty("logback.configurationFile") == null) {
+      System.setProperty("logback.configurationFile", "default-service-logback.xml");
+    }
 
-    new UserServiceLauncher(overrideStaticPathIndex > 0 ? argList.get(overrideStaticPathIndex) : null)
-        .setDefaultDirPrefix("classpath:/userService/")
-        .setSimpleSecurityEnabled(!argList.contains("--dev-disable-simple-security"))
-        .setAuthPropertiesPrefix("userService.auth")
-        .start();
+    try (final UserServiceLauncher launcher = new UserServiceLauncher()) {
+      launcher.start();
+    }
   }
 
   @Nonnull
@@ -49,14 +51,17 @@ public final class UserServiceLauncher extends StandardLauncher {
   //
 
   @Nonnull
-  private ResourceHandler createStaticHandler(@Nullable String overrideStaticPath) throws IOException {
+  private ResourceHandler createStaticHandler() throws IOException {
     final ResourceHandler resourceHandler = new ResourceHandler();
+
+    final String overrideStaticPath = getPropertyResolver().getProperty("brikar.dev.overrideStaticPath");
     if (overrideStaticPath != null) {
       getLogger().info("Using override path for static resources: {}", overrideStaticPath);
       resourceHandler.setBaseResource(Resource.newResource(new File(overrideStaticPath)));
     } else {
       resourceHandler.setBaseResource(Resource.newClassPathResource("/userService/web"));
     }
+
     return resourceHandler;
   }
 }

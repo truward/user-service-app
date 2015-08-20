@@ -105,10 +105,6 @@
         <version>1.4.0</version>
         <configuration>
           <mainClass>${launcher.mainClass}</mainClass>
-          <arguments>
-            <argument>--port</argument>
-            <argument>11280</argument>
-          </arguments>
         </configuration>
       </plugin>
     </plugins>
