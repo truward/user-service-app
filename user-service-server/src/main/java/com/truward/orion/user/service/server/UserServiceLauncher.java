@@ -28,11 +28,6 @@ public final class UserServiceLauncher extends StandardLauncher {
   }
 
   public static void main(String[] args) throws Exception {
-    // TODO: remove (config logging in brikar)
-    if (System.getProperty("logback.configurationFile") == null) {
-      System.setProperty("logback.configurationFile", "default-service-logback.xml");
-    }
-
     try (final UserServiceLauncher launcher = new UserServiceLauncher()) {
       launcher.start();
     }
