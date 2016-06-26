@@ -15,7 +15,7 @@ http://127.0.0.1:8080/index.html?debug=1#/accounts/update/22
 
 ## Release
 
-In ``user-service-server`` do ``mvn package -Passembly``.
+In ``user-service-server`` do ``mvn package -Passembly -DskipTests=true``.
 
 ## Web Client Build
 
