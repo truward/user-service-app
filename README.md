@@ -100,7 +100,7 @@ Results in:
 #### Lookup Account
 
 ```
-curl -u testonly:test -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/account/lookup -d '{"username": "admin", "password": "$2a$10$W5YdtLrCN.3dH8hilF2queEvfJedIhzSEzszgcjJ8e/NrWBCURIUW"}' -s | python -mjson.tool
+curl -u testonly:test -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/account/lookup -d '{"username": "admin"}' -s | python -mjson.tool
 ```
 
 Results in:
