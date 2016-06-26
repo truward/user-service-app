@@ -28,7 +28,7 @@ public final class UserAccountServiceTest {
   public void shouldReturnAllAccounts() {
     final UserModel.ListAccountsResponse res = userAccountService.getAccounts(null, 10);
 
-    assertFalse(res.hasOffsetToken());
+    assertEquals("", res.getOffsetToken());
     assertEquals(3, res.getAccountsCount());
   }
 
@@ -36,7 +36,7 @@ public final class UserAccountServiceTest {
   public void shouldGetSameAccountsById() {
     final UserModel.ListAccountsResponse res = userAccountService.getAccounts(null, 10);
 
-    assertFalse(res.hasOffsetToken());
+    assertEquals("", res.getOffsetToken());
     assertEquals(3, res.getAccountsCount());
 
     for (final UserModel.UserAccount account : res.getAccountsList()) {
@@ -58,29 +58,29 @@ public final class UserAccountServiceTest {
 
     UserModel.ListAccountsResponse res = userAccountService.getAccounts(null, 2);
 
-    assertTrue(res.hasOffsetToken());
+    assertNotEquals("", res.getOffsetToken());
     assertEquals(2, res.getAccountsCount());
 
     res = userAccountService.getAccounts(res.getOffsetToken(), 2);
-    assertTrue(res.hasOffsetToken());
+    assertNotEquals("", res.getOffsetToken());
     assertEquals(2, res.getAccountsCount());
 
     res = userAccountService.getAccounts(res.getOffsetToken(), 2);
-    assertFalse(res.hasOffsetToken());
+    assertEquals("", res.getOffsetToken());
     assertEquals(1, res.getAccountsCount());
   }
 
   @Test
   public void shouldDeleteAccounts() {
     UserModel.ListAccountsResponse res = userAccountService.getAccounts(null, 10);
-    assertFalse(res.hasOffsetToken());
+    assertEquals("", res.getOffsetToken());
     final List<Long> ids = res.getAccountsList().stream().map(UserModel.UserAccount::getId).collect(Collectors.toList());
 
     userAccountService.deleteAccounts(ids);
 
     res = userAccountService.getAccounts(null, 10);
     assertEquals(0, res.getAccountsCount());
-    assertFalse(res.hasOffsetToken());
+    assertEquals("", res.getOffsetToken());
   }
 
   @Test

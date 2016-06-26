@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -112,7 +113,7 @@ public final class UserAccountService {
 
     @Override
     public long registerAccount(@Nonnull UserModel.RegisterAccountRequest request) {
-      if (!request.hasInvitationToken()) {
+      if (!StringUtils.hasLength(request.getInvitationToken())) {
         throw new UnsupportedOperationException("Non-invitation token registration is not supported yet");
       }
 

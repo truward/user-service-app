@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
   function target(path) {
-    return 'target/release/userService/web/' + path;
+    return 'target/release/userService/web/static/' + path;
   }
 
   function prepareSkeleton() {

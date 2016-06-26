@@ -5,6 +5,7 @@ import com.truward.orion.user.service.model.UserRestService;
 import com.truward.orion.user.service.server.logic.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +54,7 @@ public final class UserRestController implements UserRestService {
 
   @Override
   public UserModel.ListAccountsResponse getAccounts(@RequestBody UserModel.ListAccountsRequest request) {
-    final String offsetToken = request.hasOffsetToken() ? request.getOffsetToken() : null;
+    final String offsetToken = StringUtils.hasLength(request.getOffsetToken()) ? request.getOffsetToken() : null;
     return userAccountService.getAccounts(offsetToken, request.getLimit());
   }
 
@@ -80,7 +81,7 @@ public final class UserRestController implements UserRestService {
   public UserModel.CreateInvitationTokensResponse createInvitationTokens(@RequestBody UserModel.CreateInvitationTokensRequest request) {
     return UserModel.CreateInvitationTokensResponse.newBuilder()
         .addAllInvitationTokens(userAccountService.createInvitationTokens(request.getAuthoritiesList(),
-            request.getCount(), request.hasExpirationTime() ? request.getExpirationTime() : null))
+            request.getCount(), request.getExpirationTime() > 0 ? request.getExpirationTime() : null))
         .build();
   }
 }

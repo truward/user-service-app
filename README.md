@@ -1,19 +1,7 @@
 
 ## Dev Start
 
-Create a property file somewhere in your home directory, e.g. ``/home/user/user-service.properties``:
-
-```
-# Make shutdown much faster, server will wait 100 milliseconds before stopping serving
-# pending connections and shutting down
-brikar.settings.gracefulShutdownMillis=100
-
-# Turn off basic auth
-brikar.dev.disableSecurity=true
-
-# Uncomment to also fetch static content directly from your build folder
-#brikar.dev.overrideStaticPath=/File_path_to/orion/user-service/user-service-static-content/target/release
-```
+Create a property file somewhere in your home directory, e.g. ``/home/user/user-service.properties``, use contents from ``core.properties``.
 
 Then add VM property, e.g.: ``-Dbrikar.settings.path=file:/home/user/user-service.properties``.
 
