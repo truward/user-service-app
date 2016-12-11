@@ -18,7 +18,7 @@ import java.util.Objects;
  * @author Alexander Shabanov
  */
 @Controller
-@RequestMapping("/rest/user")
+@RequestMapping("/api/user")
 public final class UserRestController implements UserRestService {
   private final UserAccountService.Contract userAccountService;
 
