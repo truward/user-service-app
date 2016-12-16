@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author Alexander Shabanov
  */
 @Controller
-@RequestMapping("/api/password")
+@RequestMapping("/api/password/v1")
 public final class PasswordRestController {
   private final PasswordEncoder passwordEncoder;
 

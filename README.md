@@ -51,7 +51,7 @@ curl -u testonly:test -X POST 127.0.0.1:8080/g/admin/config
 #### User List
 
 ```
-curl -u testonly:test -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/account/list -d '{"limit": 8}' -s | python -mjson.tool
+curl -u testonly:test -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/v1/account/list -d '{"limit": 8}' -s | python -mjson.tool
 ```
 
 Results in:
@@ -100,7 +100,7 @@ Results in:
 #### Lookup Account
 
 ```
-curl -u testonly:test -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/account/lookup -d '{"username": "admin"}' -s | python -mjson.tool
+curl -u testonly:test -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/v1/account/lookup -d '{"username": "admin"}' -s | python -mjson.tool
 ```
 
 Results in:

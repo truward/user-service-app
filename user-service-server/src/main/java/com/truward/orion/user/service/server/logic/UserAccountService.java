@@ -1,6 +1,5 @@
 package com.truward.orion.user.service.server.logic;
 
-import com.truward.orion.user.service.model.UserModel;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,6 +15,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.truward.orion.user.service.model.UserModelV1.*;
+
 /**
  * @author Alexander Shabanov
  */
@@ -24,17 +25,17 @@ public final class UserAccountService {
   public interface Contract {
 
     @Nonnull
-    UserModel.UserAccount getAccountById(long id);
+    UserAccount getAccountById(long id);
 
     @Nonnull
-    UserModel.ListAccountsResponse getAccounts(@Nullable String offsetToken, int limit);
+    ListAccountsResponse getAccounts(@Nullable String offsetToken, int limit);
 
     @Nullable
-    UserModel.UserAccount findAccount(@Nonnull String username, boolean includeContacts);
+    UserAccount findAccount(@Nonnull String username, boolean includeContacts);
 
-    long registerAccount(@Nonnull UserModel.RegisterAccountRequest request);
+    long registerAccount(@Nonnull RegisterAccountRequest request);
 
-    void updateAccount(@Nonnull UserModel.UpdateAccountRequest request);
+    void updateAccount(@Nonnull UpdateAccountRequest request);
 
     void deleteAccounts(@Nonnull List<Long> userIds);
 
@@ -43,7 +44,7 @@ public final class UserAccountService {
 
     void cleanExpiredTokens(long now);
 
-    boolean checkAccountPresence(@Nonnull String nickname, @Nonnull List<UserModel.Contact> contacts);
+    boolean checkAccountPresence(@Nonnull String nickname, @Nonnull List<Contact> contacts);
   }
 
   @Transactional
@@ -59,8 +60,8 @@ public final class UserAccountService {
     @Nonnull
     @Override
     @Transactional(readOnly = true)
-    public UserModel.UserAccount getAccountById(long id) {
-      final List<UserModel.UserAccount> accounts = fetchList(db,
+    public UserAccount getAccountById(long id) {
+      final List<UserAccount> accounts = fetchList(db,
           db.query("SELECT id, nickname, password_hash, created, active " +
                   "FROM user_profile WHERE id=?",
               UserAccountBuilderRowMapper.INSTANCE, id));
@@ -74,18 +75,18 @@ public final class UserAccountService {
     @Nonnull
     @Override
     @Transactional(readOnly = true)
-    public UserModel.ListAccountsResponse getAccounts(@Nullable String offsetToken, int limit) {
+    public ListAccountsResponse getAccounts(@Nullable String offsetToken, int limit) {
       if (limit < 0 || limit > MAX_LIMIT) {
         throw new IllegalArgumentException("limit is negative or too big");
       }
 
       final Long tokenId = tokenToLong(offsetToken);
-      final List<UserModel.UserAccount> accounts = fetchList(db,
+      final List<UserAccount> accounts = fetchList(db,
           db.query("SELECT id, nickname, password_hash, created, active " +
                   "FROM user_profile WHERE ((? IS NULL) OR (id>?)) ORDER BY id ASC LIMIT ?",
               UserAccountBuilderRowMapper.INSTANCE, tokenId, tokenId, limit));
 
-      final UserModel.ListAccountsResponse.Builder builder = UserModel.ListAccountsResponse.newBuilder();
+      final ListAccountsResponse.Builder builder = ListAccountsResponse.newBuilder();
 
       // calc new token
       if (accounts.size() == limit && limit > 0) {
@@ -97,8 +98,8 @@ public final class UserAccountService {
 
     @Nullable
     @Override
-    public UserModel.UserAccount findAccount(@Nonnull String username, boolean includeContacts) {
-      final List<UserModel.UserAccount.Builder> builders = db.query(
+    public UserAccount findAccount(@Nonnull String username, boolean includeContacts) {
+      final List<UserAccount.Builder> builders = db.query(
           "SELECT id, nickname, password_hash, created, active FROM user_profile " +
               "WHERE nickname=?",
           UserAccountBuilderRowMapper.INSTANCE, username);
@@ -112,7 +113,7 @@ public final class UserAccountService {
     }
 
     @Override
-    public long registerAccount(@Nonnull UserModel.RegisterAccountRequest request) {
+    public long registerAccount(@Nonnull RegisterAccountRequest request) {
       if (!StringUtils.hasLength(request.getInvitationToken())) {
         throw new UnsupportedOperationException("Non-invitation token registration is not supported yet");
       }
@@ -152,7 +153,7 @@ public final class UserAccountService {
     }
 
     @Override
-    public void updateAccount(@Nonnull UserModel.UpdateAccountRequest request) {
+    public void updateAccount(@Nonnull UpdateAccountRequest request) {
       db.update("UPDATE user_profile SET nickname=?, password_hash=?, active=? WHERE id=?", request.getNickname(),
           request.getPasswordHash(), request.getActive() ? 1 : 0, request.getUserId());
 
@@ -206,7 +207,7 @@ public final class UserAccountService {
     }
 
     @Override
-    public boolean checkAccountPresence(@Nonnull String nickname, @Nonnull List<UserModel.Contact> contacts) {
+    public boolean checkAccountPresence(@Nonnull String nickname, @Nonnull List<Contact> contacts) {
       if (db.queryForObject("SELECT COUNT(0) FROM user_profile WHERE nickname=?", Integer.class, nickname) > 0) {
         return true;
       }
@@ -224,14 +225,14 @@ public final class UserAccountService {
   //
 
   private static void insertContacts(@Nonnull JdbcOperations db, long userId,
-                                     @Nonnull List<UserModel.Contact> contacts) {
-    for (final UserModel.Contact contact : contacts) {
+                                     @Nonnull List<Contact> contacts) {
+    for (final Contact contact : contacts) {
       db.update("INSERT INTO user_contact (user_id, contact_type_id, contact_val) VALUES (?, ?, ?)",
           userId, toInt(contact.getType()), contact.getNumber());
     }
   }
 
-  private static int toInt(@Nonnull UserModel.ContactType contactType) {
+  private static int toInt(@Nonnull ContactType contactType) {
     switch (contactType) {
       case EMAIL:
         return 1;
@@ -281,12 +282,12 @@ public final class UserAccountService {
     }
   }
 
-  private static final class UserAccountBuilderRowMapper implements RowMapper<UserModel.UserAccount.Builder> {
+  private static final class UserAccountBuilderRowMapper implements RowMapper<UserAccount.Builder> {
     static final UserAccountBuilderRowMapper INSTANCE = new UserAccountBuilderRowMapper();
 
     @Override
-    public UserModel.UserAccount.Builder mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return UserModel.UserAccount.newBuilder()
+    public UserAccount.Builder mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return UserAccount.newBuilder()
           .setId(rs.getLong("id"))
           .setNickname(rs.getString("nickname"))
           .setPasswordHash(rs.getString("password_hash"))
@@ -295,12 +296,12 @@ public final class UserAccountService {
     }
   }
 
-  private static final class ContactRowMapper implements RowMapper<UserModel.Contact> {
+  private static final class ContactRowMapper implements RowMapper<Contact> {
     static final ContactRowMapper INSTANCE = new ContactRowMapper();
 
     @Override
-    public UserModel.Contact mapRow(ResultSet rs, int rowNum) throws SQLException {
-      return UserModel.Contact.newBuilder()
+    public Contact mapRow(ResultSet rs, int rowNum) throws SQLException {
+      return Contact.newBuilder()
           .setNumber(rs.getString("contact_val"))
           .setType(toContactType(rs.getInt("contact_type_id")))
           .build();
@@ -308,24 +309,24 @@ public final class UserAccountService {
   }
 
   @Nonnull
-  private static UserModel.ContactType toContactType(int val) {
+  private static ContactType toContactType(int val) {
     switch (val) {
-      case 1: return UserModel.ContactType.EMAIL;
-      case 2: return UserModel.ContactType.PHONE;
+      case 1: return ContactType.EMAIL;
+      case 2: return ContactType.PHONE;
       default:
         throw new IllegalArgumentException("Unknown contact value=" + val);
     }
   }
 
   @Nonnull
-  private static List<UserModel.UserAccount> fetchList(@Nonnull JdbcOperations db,
-                                                       @Nonnull List<UserModel.UserAccount.Builder> builders) {
+  private static List<UserAccount> fetchList(@Nonnull JdbcOperations db,
+                                                       @Nonnull List<UserAccount.Builder> builders) {
     return builders.stream().map(builder -> fetchAccountData(db, builder, true)).collect(Collectors.toList());
   }
 
   @Nonnull
-  private static UserModel.UserAccount fetchAccountData(@Nonnull JdbcOperations db,
-                                                        @Nonnull UserModel.UserAccount.Builder builder,
+  private static UserAccount fetchAccountData(@Nonnull JdbcOperations db,
+                                                        @Nonnull UserAccount.Builder builder,
                                                         boolean includeContacts) {
     final long id = builder.getId();
 

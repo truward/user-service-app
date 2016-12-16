@@ -19,7 +19,7 @@ AjaxUserService.prototype.getAccounts = function (offsetToken, limit) {
   var accountCache = this.cache.accounts;
 
   // [1] get accounts
-  var promise = ajax.request("POST", "/api/user/account/list", {
+  var promise = ajax.request("POST", "/api/user/v1/account/list", {
     "offsetToken": offsetToken,
     "limit": limit
   });
@@ -37,12 +37,12 @@ AjaxUserService.prototype.getAccounts = function (offsetToken, limit) {
 
 AjaxUserService.prototype.getAccountById = function (userId) {
   return this.cache.accounts.getValue(userId, function () {
-    return ajax.request("GET", "/api/user/account/" + userId);
+    return ajax.request("GET", "/api/user/v1/account/" + userId);
   });
 }
 
 AjaxUserService.prototype.updateAccount = function (account) {
-  return ajax.request("PUT", "/api/user/account", {
+  return ajax.request("PUT", "/api/user/v1/account", {
     "userId": account["id"],
     "nickname": account["nickname"],
     "passwordHash": account["passwordHash"],
@@ -53,7 +53,7 @@ AjaxUserService.prototype.updateAccount = function (account) {
 }
 
 AjaxUserService.prototype.registerAccount = function (account) {
-  return ajax.request("POST", "/api/user/account", {
+  return ajax.request("POST", "/api/user/v1/account", {
     "nickname": account["nickname"],
     "passwordHash": account["passwordHash"],
     "contacts": account["contacts"],
@@ -63,11 +63,11 @@ AjaxUserService.prototype.registerAccount = function (account) {
 }
 
 AjaxUserService.prototype.deleteAccount = function (userId) {
-  return ajax.request("DELETE", "/api/user/account/list", {"userIds": [userId]});
+  return ajax.request("DELETE", "/api/user/v1/account/list", {"userIds": [userId]});
 }
 
 AjaxUserService.prototype.generateTokens = function (count) {
-  return ajax.request("POST", "/api/user/token/create", {"count": count, "authorities": []});
+  return ajax.request("POST", "/api/user/v1/token/create", {"count": count, "authorities": []});
 }
 
 //

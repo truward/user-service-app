@@ -1,6 +1,5 @@
 package com.truward.orion.user.service.server;
 
-import com.truward.orion.user.service.model.UserModel;
 import com.truward.orion.user.service.server.controller.UserRestController;
 import com.truward.orion.user.service.server.logic.UserAccountService;
 import org.junit.Before;
@@ -9,6 +8,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import static com.truward.orion.user.service.model.UserModelV1.*;
 
 /**
  * @author Alexander Shabanov
@@ -30,8 +31,8 @@ public class UserRestControllerTest {
     when(userServiceMock.findAccount(username, false)).thenReturn(null);
 
     // When:
-    final UserModel.AccountLookupResponse lookupResponse = userController.lookupAccount(
-        UserModel.AccountLookupRequest.newBuilder()
+    final AccountLookupResponse lookupResponse = userController.lookupAccount(
+        AccountLookupRequest.newBuilder()
             .setUsername(username)
             .build());
 

@@ -1,6 +1,5 @@
 package com.truward.orion.user.service.server.controller;
 
-import com.truward.orion.user.service.model.UserModel;
 import com.truward.orion.user.service.model.UserRestService;
 import com.truward.orion.user.service.server.logic.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Objects;
 
+import static com.truward.orion.user.service.model.UserModelV1.*;
+
 /**
  * Implementation of {@link UserRestService} that exposes major operations on user accounts.
  *
  * @author Alexander Shabanov
  */
 @Controller
-@RequestMapping("/api/user")
+@RequestMapping("/api/user/v1")
 public final class UserRestController implements UserRestService {
   private final UserAccountService.Contract userAccountService;
 
@@ -28,40 +29,40 @@ public final class UserRestController implements UserRestService {
   }
 
   @Override
-  public UserModel.UserAccount getAccountById(@PathVariable("id") long id) {
+  public UserAccount getAccountById(@PathVariable("id") long id) {
     return userAccountService.getAccountById(id);
   }
 
   @Override
-  public UserModel.RegisterAccountResponse registerAccount(@RequestBody UserModel.RegisterAccountRequest request) {
+  public RegisterAccountResponse registerAccount(@RequestBody RegisterAccountRequest request) {
     userAccountService.cleanExpiredTokens(System.currentTimeMillis());
-    return UserModel.RegisterAccountResponse.newBuilder()
+    return RegisterAccountResponse.newBuilder()
         .setUserId(userAccountService.registerAccount(request))
         .build();
   }
 
   @Override
-  public UserModel.UpdateAccountResponse updateAccount(@RequestBody UserModel.UpdateAccountRequest request) {
+  public UpdateAccountResponse updateAccount(@RequestBody UpdateAccountRequest request) {
     userAccountService.updateAccount(request);
-    return UserModel.UpdateAccountResponse.getDefaultInstance();
+    return UpdateAccountResponse.getDefaultInstance();
   }
 
   @Override
-  public UserModel.DeleteAccountsResponse deleteAccounts(@RequestBody UserModel.DeleteAccountsRequest request) {
+  public DeleteAccountsResponse deleteAccounts(@RequestBody DeleteAccountsRequest request) {
     userAccountService.deleteAccounts(request.getUserIdsList());
-    return UserModel.DeleteAccountsResponse.getDefaultInstance();
+    return DeleteAccountsResponse.getDefaultInstance();
   }
 
   @Override
-  public UserModel.ListAccountsResponse getAccounts(@RequestBody UserModel.ListAccountsRequest request) {
+  public ListAccountsResponse getAccounts(@RequestBody ListAccountsRequest request) {
     final String offsetToken = StringUtils.hasLength(request.getOffsetToken()) ? request.getOffsetToken() : null;
     return userAccountService.getAccounts(offsetToken, request.getLimit());
   }
 
   @Override
-  public UserModel.AccountLookupResponse lookupAccount(@RequestBody UserModel.AccountLookupRequest request) {
-    final UserModel.AccountLookupResponse.Builder builder = UserModel.AccountLookupResponse.newBuilder();
-    final UserModel.UserAccount account = userAccountService.findAccount(request.getUsername(),
+  public AccountLookupResponse lookupAccount(@RequestBody AccountLookupRequest request) {
+    final AccountLookupResponse.Builder builder = AccountLookupResponse.newBuilder();
+    final UserAccount account = userAccountService.findAccount(request.getUsername(),
         request.getIncludeContacts());
 
     if (account != null) {
@@ -71,15 +72,15 @@ public final class UserRestController implements UserRestService {
   }
 
   @Override
-  public UserModel.AccountPresenceResponse checkAccountPresence(@RequestBody UserModel.AccountPresenceRequest request) {
-    return UserModel.AccountPresenceResponse.newBuilder()
+  public AccountPresenceResponse checkAccountPresence(@RequestBody AccountPresenceRequest request) {
+    return AccountPresenceResponse.newBuilder()
         .setExists(userAccountService.checkAccountPresence(request.getNickname(), request.getContactsList()))
         .build();
   }
 
   @Override
-  public UserModel.CreateInvitationTokensResponse createInvitationTokens(@RequestBody UserModel.CreateInvitationTokensRequest request) {
-    return UserModel.CreateInvitationTokensResponse.newBuilder()
+  public CreateInvitationTokensResponse createInvitationTokens(@RequestBody CreateInvitationTokensRequest request) {
+    return CreateInvitationTokensResponse.newBuilder()
         .addAllInvitationTokens(userAccountService.createInvitationTokens(request.getAuthoritiesList(),
             request.getCount(), request.getExpirationTime() > 0 ? request.getExpirationTime() : null))
         .build();
