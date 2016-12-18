@@ -1,4 +1,4 @@
-var React = require('React');
+var React = require('react');
 
 var Dispatcher = require('./view/dispatcher.js');
 var UserService = require('./service/ajax-user-service.js').UserService;

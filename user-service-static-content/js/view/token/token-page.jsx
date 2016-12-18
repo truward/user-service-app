@@ -1,4 +1,4 @@
-var React = require('React');
+var React = require('react');
 
 var EDITING = "editing";
 var RESULT_RECEIVED = "result_received";

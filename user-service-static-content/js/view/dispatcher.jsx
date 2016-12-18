@@ -1,4 +1,4 @@
-var React = require('React');
+var React = require('react');
 var Router = require('director').Router;
 var DEFAULT_LIMIT = require("../service/ajax-user-service.js").DEFAULT_LIMIT;
 

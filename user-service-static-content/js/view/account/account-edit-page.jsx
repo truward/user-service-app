@@ -1,4 +1,4 @@
-var React = require('React');
+var React = require('react');
 
 var LOADING = 1;
 var UPDATE = 2;

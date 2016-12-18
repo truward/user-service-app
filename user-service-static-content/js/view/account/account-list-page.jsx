@@ -1,4 +1,4 @@
-var React = require('React');
+var React = require('react');
 var AccountTableItem = require("./account-table-item.js");
 
 function fetchAccounts(offsetToken, limit) {

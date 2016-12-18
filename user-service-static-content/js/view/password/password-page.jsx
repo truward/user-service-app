@@ -1,4 +1,4 @@
-var React = require('React');
+var React = require('react');
 
 var START = "start";
 var EDITING = "editing";
