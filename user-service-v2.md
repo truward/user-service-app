@@ -75,3 +75,7 @@ Correspond to user registration data. User must be registered in a scope.
 * ``DELETE  /resources/{string:id}/links/users/{string:id}``
 * ``GET     /resources/{string:id}/links/users/{string:id}``
 * ``GET     /resources/{string:id}/links/users?from={string?:pageId}&limit={int?:limit}``
+
+# Tooling
+
+* Get rid of RESTful interface in favor of command line tools
