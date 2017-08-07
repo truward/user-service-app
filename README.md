@@ -27,10 +27,21 @@ npm install --save-dev
 
 ## Samples
 
+### Set up Credentials
+
+All the samples below assumes that credentials will be stored in USER_SVC_CREDS environment
+variable.
+
+Do the following before calling this service:
+
+```
+export USER_SVC_CREDS="TestServiceUser:testPassword2"
+```
+
 ### Health Check
 
 ```
-curl -u testonly:test -X POST 127.0.0.1:8080/rest/health
+curl -u $USER_SVC_CREDS -X POST 127.0.0.1:8080/rest/health
 ```
 
 Should result in
@@ -42,7 +53,7 @@ OK
 ### Fetching Server Configuration
 
 ```
-curl -u testonly:test -X POST 127.0.0.1:8080/g/admin/config
+curl -u $USER_SVC_CREDS -X POST 127.0.0.1:8080/g/admin/config
 ```
 
 
@@ -51,7 +62,7 @@ curl -u testonly:test -X POST 127.0.0.1:8080/g/admin/config
 #### User List
 
 ```
-curl -u testonly:test -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/v1/account/list -d '{"limit": 8}' -s | python -mjson.tool
+curl -u $USER_SVC_CREDS -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/v1/account/list -d '{"limit": 8}' -s | python -mjson.tool
 ```
 
 Results in:
@@ -100,7 +111,7 @@ Results in:
 #### Lookup Account
 
 ```
-curl -u testonly:test -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/v1/account/lookup -d '{"username": "admin"}' -s | python -mjson.tool
+curl -u $USER_SVC_CREDS -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/v1/account/lookup -d '{"username": "admin"}' -s | python -mjson.tool
 ```
 
 Results in:

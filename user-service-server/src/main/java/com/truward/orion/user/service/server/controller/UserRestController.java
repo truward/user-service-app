@@ -21,10 +21,10 @@ import static com.truward.orion.user.service.model.UserModelV1.*;
 @Controller
 @RequestMapping("/api/user/v1")
 public final class UserRestController implements UserRestService {
-  private final UserAccountService.Contract userAccountService;
+  private final UserAccountService userAccountService;
 
   @Autowired
-  public UserRestController(UserAccountService.Contract userAccountService) {
+  public UserRestController(UserAccountService userAccountService) {
     this.userAccountService = Objects.requireNonNull(userAccountService);
   }
 

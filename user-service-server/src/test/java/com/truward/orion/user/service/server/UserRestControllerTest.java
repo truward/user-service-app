@@ -15,12 +15,12 @@ import static com.truward.orion.user.service.model.UserModelV1.*;
  * @author Alexander Shabanov
  */
 public class UserRestControllerTest {
-  private UserAccountService.Contract userServiceMock;
+  private UserAccountService userServiceMock;
   private UserRestController userController;
 
   @Before
   public void init() {
-    userServiceMock = mock(UserAccountService.Contract.class);
+    userServiceMock = mock(UserAccountService.class);
     userController = new UserRestController(userServiceMock);
   }
 

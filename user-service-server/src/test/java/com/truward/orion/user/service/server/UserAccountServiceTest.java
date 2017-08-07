@@ -23,7 +23,7 @@ import static com.truward.orion.user.service.model.UserModelV1.*;
 public final class UserAccountServiceTest {
 
   @Resource
-  private UserAccountService.Contract userAccountService;
+  private UserAccountService userAccountService;
 
   @Test
   public void shouldReturnAllAccounts() {
