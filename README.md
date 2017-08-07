@@ -41,7 +41,7 @@ export USER_SVC_CREDS="TestServiceUser:testPassword2"
 ### Health Check
 
 ```
-curl -u $USER_SVC_CREDS -X POST 127.0.0.1:8080/rest/health
+curl -u $USER_SVC_CREDS -X POST 127.0.0.1:8080/api/health
 ```
 
 Should result in
@@ -62,7 +62,7 @@ curl -u $USER_SVC_CREDS -X POST 127.0.0.1:8080/g/admin/config
 #### User List
 
 ```
-curl -u $USER_SVC_CREDS -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/v1/account/list -d '{"limit": 8}' -s | python -mjson.tool
+curl -u $USER_SVC_CREDS -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/api/user/v1/account/list -d '{"limit": 8}' -s | python -mjson.tool
 ```
 
 Results in:
@@ -111,7 +111,7 @@ Results in:
 #### Lookup Account
 
 ```
-curl -u $USER_SVC_CREDS -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/rest/user/v1/account/lookup -d '{"username": "admin"}' -s | python -mjson.tool
+curl -u $USER_SVC_CREDS -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X POST 127.0.0.1:8080/api/user/v1/account/lookup -d '{"username": "admin"}' -s | python -mjson.tool
 ```
 
 Results in:
@@ -138,15 +138,15 @@ Results in:
 Create database and fill it with test data:
 
 ```
-java -cp ~/.m2/repository/com/h2database/h2/1.4.183/h2-1.4.183.jar org.h2.tools.RunScript -url jdbc:h2:/tmp/userdb -user sa -script user-service-server/src/main/resources/userService/sql/user-schema.sql
-java -cp ~/.m2/repository/com/h2database/h2/1.4.183/h2-1.4.183.jar org.h2.tools.RunScript -url jdbc:h2:/tmp/userdb -user sa -script user-service-server/src/main/resources/userService/sql/user-fixture.sql
+java -cp ~/.m2/repository/com/h2database/h2/1.4.192/h2-1.4.192.jar org.h2.tools.RunScript -url jdbc:h2:/tmp/userdb -user sa -script user-service-server/src/main/resources/userService/sql/user-schema.sql
+java -cp ~/.m2/repository/com/h2database/h2/1.4.192/h2-1.4.192.jar org.h2.tools.RunScript -url jdbc:h2:/tmp/userdb -user sa -script user-service-server/src/main/resources/userService/sql/user-fixture.sql
 ```
 
 
 Then you can connect to it using h2 shell (remove rlwrap if you don't want to use readline):
 
 ```
-rlwrap java -cp ~/.m2/repository/com/h2database/h2/1.4.183/h2-1.4.183.jar org.h2.tools.Shell -url jdbc:h2:/tmp/userdb -user sa
+rlwrap java -cp ~/.m2/repository/com/h2database/h2/1.4.192/h2-1.4.192.jar org.h2.tools.Shell -url jdbc:h2:/tmp/userdb -user sa
 ```
 
 
