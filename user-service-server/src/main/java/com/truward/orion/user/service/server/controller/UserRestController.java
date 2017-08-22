@@ -1,5 +1,6 @@
 package com.truward.orion.user.service.server.controller;
 
+import com.truward.brikar.server.controller.DefaultRestExceptionHandler;
 import com.truward.orion.user.service.model.UserRestService;
 import com.truward.orion.user.service.server.logic.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import static com.truward.orion.user.service.model.UserModelV1.*;
  */
 @Controller
 @RequestMapping("/api/user/v1")
-public final class UserRestController implements UserRestService {
+public final class UserRestController implements UserRestService, DefaultRestExceptionHandler {
   private final UserAccountService userAccountService;
 
   @Autowired

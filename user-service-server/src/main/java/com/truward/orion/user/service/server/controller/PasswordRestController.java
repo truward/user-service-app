@@ -1,5 +1,6 @@
 package com.truward.orion.user.service.server.controller;
 
+import com.truward.brikar.server.controller.DefaultRestExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,7 @@ import java.util.Objects;
  */
 @Controller
 @RequestMapping("/api/password/v1")
-public final class PasswordRestController {
+public final class PasswordRestController implements DefaultRestExceptionHandler {
   private final PasswordEncoder passwordEncoder;
 
   @Autowired
