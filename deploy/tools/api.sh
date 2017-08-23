@@ -1,23 +1,17 @@
-# !/bin/bash
+#!/usr/bin/env bash
+
+# Include common script base
+TOOLS_DIR=$(dirname "$0")
+source "$TOOLS_DIR/common.sh"
 
 # Get input parameters
 ACTION=$1
 
-# Fail on error
-set -e
-
-# Infer directories
-TOOLS_PATH=$(dirname "$0")
-BASE_DIR=$(cd "$TOOLS_PATH/../" && pwd)
-
-function prop {
-  grep "${1}" $BASE_DIR/var/app.properties|cut -d'=' -f2
-}
-
-PORT="$(prop 'brikar.settings.port')"
-SVC_URI="http://127.0.0.1:$PORT"
-
-SVC_CREDS="$(prop 'userService.auth.1.username'):$(prop 'userService.auth.1.password')"
+# Infer application target parameters
+HOST=$(prop 'brikar.tools.host')
+PORT=$(prop 'brikar.tools.port')
+SVC_URI="$HOST:$PORT"
+SVC_CREDS="$(prop 'brikar.tools.username'):$(prop 'brikar.tools.password')"
 
 function invokeApi {
   curl -u $SVC_CREDS -H 'Accept: application/json; charset=UTF-8' -H 'Content-Type: application/json; charset=UTF-8' -X ${1} $SVC_URI/api/${2} -d "${3}" -s | python -mjson.tool
@@ -70,7 +64,10 @@ case $ACTION in
       exit 1
     fi
     # Current time in milliseconds + hour (3600000 is a number of milliseconds per hour)
-    EXPIRATION_TIME=$(($(date +%s%N)/1000000+3600000))
+    EXPIRATION_TIME=$3
+    if [ -z "$EXPIRATION_TIME" ]; then
+      EXPIRATION_TIME=$(($(date +%s%N)/1000000+3600000))
+    fi
     invokeApi "POST" "user/v1/token/create" "{\"authorities\": $AUTHORITIES, \"count\": 1, \"expirationTime\": $EXPIRATION_TIME}"
     ;;
 
@@ -83,6 +80,15 @@ case $ACTION in
     invokeApi "POST" "user/v1/account" "$REGISTRATION_REQUEST"
     ;;
 
+  update-account)
+    UPDATE_REQUEST=$2
+    if [ -z "$UPDATE_REQUEST" ]; then
+      echo "No update request provided"
+      exit 1
+    fi
+    invokeApi "PUT" "user/v1/account" "$UPDATE_REQUEST"
+    ;;
+
   delete-account)
     ACCOUNT_ID=$2
     if [ -z "$ACCOUNT_ID" ]; then
@@ -90,7 +96,7 @@ case $ACTION in
       exit 1
     fi
 
-    invokeApi "DELETE" "user/v1/account/list" "{\"userId\": [$ACCOUNT_ID]}"
+    invokeApi "DELETE" "user/v1/account/list" "{\"userIds\": [$ACCOUNT_ID]}"
     ;;
 
   encode-password)
@@ -118,3 +124,4 @@ case $ACTION in
   *)
     echo "Unknown action $ACTION"
 esac
+
