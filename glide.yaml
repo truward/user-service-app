@@ -1,0 +1,23 @@
+package: github.com/truward/user-service-app
+license: MIT
+import:
+- package: github.com/golang/protobuf/proto
+- package: github.com/golang/protobuf/protoc-gen-go
+- package: github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+- package: github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+- package: google.golang.org/grpc
+- package: google.golang.org/genproto/googleapis/api/annotations
+- package: golang.org/x/text/secure/bidirule
+- package: github.com/golang/glog
+testImport:
+- package: github.com/stretchr/testify
+  version: ~1.1.4
+  subpackages:
+  - assert
+  - require
+- package: golang.org/x/tools
+  subpackages:
+  - cover
+- package: github.com/golang/lint
+  subpackages:
+  - golint

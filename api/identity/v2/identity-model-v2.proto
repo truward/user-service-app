@@ -1,0 +1,238 @@
+syntax = "proto3";
+
+package identity;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "api/identity/v2;identity";
+option java_multiple_files = true;
+option java_outer_classname = "IdentityProto";
+option java_package = "com.truward.services.api.identity.v2";
+option objc_class_prefix = "TAPI";
+
+//
+// Models
+//
+
+enum ContactType {
+
+  UNKNOWN_CONTACT_TYPE = 0;
+
+  PHONE = 1;
+
+  EMAIL = 2;
+}
+
+message Contact {
+
+  string value = 1;
+
+  ContactType type = 2;
+}
+
+enum CredentialsType {
+
+  // Unknown type, indicates invalid or uninitialized credentials
+  UNKNOWN_CREDENTIALS_TYPE = 0;
+
+  // Indicates, that password provided in plain text
+  PLAIN = 1;
+
+  // Indicates, that password is stored as BCRYPT hash. This is the preferred way of storing passwords
+  // See also
+  //  * https://docs.spring.io/spring-security/site/docs/current/apidocs/org/springframework/security/crypto/bcrypt/BCryptPasswordEncoder.html
+  //  * https://bcrypt-generator.com/
+  //  * https://www.dailycred.com/article/bcrypt-calculator
+  //  * https://asecuritysite.com/encryption/bcrypt
+  BCRYPT = 2;
+}
+
+message Credentials {
+
+  // Unique ID given to this credential, shall be unique in a given collection of credentials within a profile
+  // May be empty, however not more than one credential entry shall have an empty ID
+  string id = 1;
+
+  // Credentials string (e.g. password) associated with this credentials type
+  string value = 2;
+
+  // Credentials type, shall not be unknown
+  CredentialsType type = 3;
+}
+
+enum AccountState {
+  
+  UNKNOWN_ACCOUNT_STATE = 0;
+
+  ACTIVE = 1;
+
+  BLOCKED = 2;
+}
+
+enum AccountType {
+  
+    // Invalid or uninitialized account type
+    UNKNOWN_ACCOUNT_TYPE = 0;
+  
+    // Account is a person
+    PERSON = 1;
+  
+    // Account is a service
+    SERVICE = 2;
+  }
+
+message Account {
+  
+  string id = 1;
+  
+  AccountState state = 2;
+
+  AccountType type = 3;
+  
+  // Global user alias, can be optional (in this case profile with the contacts should be given)
+  // Valid values are alphanumerical only (only latin alphabet and numbers are allowed)
+  string alias = 4;
+
+  repeated Credentials credentials = 5;
+  
+  // List of roles associated with the account, e.g.
+  // `log/viewer`, `log/writer`, `db/admin`, etc.
+  // every account assumed to implicitly own the role "user/{id}/owner"
+  repeated string roles = 6;
+
+  // Time, when account was created
+  google.protobuf.Timestamp created = 7;
+
+  // Time, when account was updated
+  google.protobuf.Timestamp updated = 8;
+
+  // Optional profile, associated with this account (users only)
+  Profile profile = 9;
+
+  // `etag` is used for optimistic concurrency control as a way to help
+  // prevent simultaneous updates of an account from overwriting each other.
+  //
+  // It is strongly suggested that systems make use of the `etag` in the
+  // read-modify-write cycle to perform account updates in order to avoid race
+  // conditions: An `etag` is returned in the response to `getAccount`, and
+  // systems are expected to put that etag in the request to `updateAccount` to
+  // ensure that their change will be applied to the same version of the policy.
+  //
+  // If no `etag` is provided in the call to `updateAccount`, then the existing
+  // policy is overwritten blindly.
+  string etag = 10;
+}
+
+enum ImageType {
+  
+  UNKNOWN_IMAGE_TYPE = 0;
+
+  AVATAR = 1;
+
+  PHOTO = 2;
+}
+
+message Image {
+
+  // A type of image
+  ImageType type = 1;
+
+  // An URL to the image, e.g.
+  // https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=120
+  string url = 2;
+}
+
+enum Gender {
+
+  UNKNOWN_GENDER = 0;
+
+  MALE = 1;
+
+  FEMALE = 2;
+}
+
+message Profile {
+  
+  FullName name = 1;
+
+  // List of images, associated with this profile
+  repeated Image images = 2;
+
+  // List of user contacts
+  repeated Contact contacts = 3;
+
+  // Optional, user gender code
+  Gender gender = 4;
+}
+
+message FullName {
+  string display = 1;
+  string first = 2;
+  string last = 3;
+  string middle = 4;
+}
+
+//
+// Service Messages and API
+//
+
+message ListAccountsRequest {
+
+  string offsetToken = 1;
+
+  int32 limit = 2;
+}
+
+message ListAccountsResponse {
+
+  string offsetToken = 1;
+
+  repeated Account accounts = 2;
+}
+
+message LookupAccountRequest {
+
+  // User account alias, it can be a username or a contact value
+  string name = 1;
+}
+
+message RegisterAccountRequest {
+
+  // Account type, should be "person" or "service"
+  AccountType type = 1;
+
+  // Global user alias, can be optional (in this case profile with the contacts should be given)
+  string alias = 2;
+
+  repeated Credentials credentials = 3;
+
+  // List of roles associated with the account, e.g.
+  // `log/viewer`, `log/writer`, `db/admin`, etc.
+  // every account assumed to implicitly own the role "user/{id}/owner"
+  repeated string roles = 4;
+
+  // Indicates initial account state
+  AccountState state = 5;
+
+  Profile profile = 6;
+}
+
+message RegisterAccountResponse {
+
+  Account account = 1;
+}
+
+
+//
+// Service
+//
+
+service IdentityService {
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
+    option (google.api.http) = {
+      post: "/v2/accounts/list"
+      body: "*"
+    };
+  }
+}
