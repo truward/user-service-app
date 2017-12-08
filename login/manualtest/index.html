@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sample Website for Login Testing</title>
+  <style type="text/css">
+  .hidden {
+    display: hidden
+  }
+  </style>
+</head>
+<body>
+<h2>Sample Website for Login Testing</h2>
+<div>
+  <h3>Login</h3>
+  <p><a href="http://127.0.0.1:8080/login?redirect-url=http%3A%2F%2F127.0.0.1%3A8000%2Findex.html">Click here</a> to redirect to login page</p>
+  <hr/>
+</div>
+<script type="text/javascript">
+function parseQueryString(searchString) {
+  var objURL = {};
+
+  searchString.replace(new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+    function($ignored0, $paramKey, $ignored2, $paramValue) {
+      objURL[$paramKey] = $paramValue;
+    });
+
+  return objURL;
+};
+
+window.onload = function () {
+  // parse parameters
+  var qs = parseQueryString(document.location.search)
+  console.log("Loaded, params:", qs);
+  if (qs.hasOwnProperty("token")) {
+    // Got redirect from login page, successful case: JWT must be stored in a cookie
+  } else if (qs.hasOwnProperty("error-code")) {
+    // Got redirect from login page, error case: user should be presented with a warning
+  }
+}
+</script>
+</body>
+</html>
+
